@@ -1,0 +1,41 @@
+---
+- name: "Make sure Jenkins is stopped"
+  service:
+    name: "jenkins"
+    state: "stopped"
+  ignore_errors: true
+  changed_when: false
+
+- name: "Create Jenkins group"
+  group:
+    name: "{{ jenkins_config_group }}"
+    state: present
+
+- name: "Create Jenkins user"
+  user:
+    name: "{{ jenkins_config_owner }}"
+    groups: "{{ jenkins_config_group }}"
+    state: present
+
+- name: "Install Java"
+  yum:
+    name: "java-11-openjdk"
+    state: "present"
+
+- name: select java default version
+  shell: 'update-alternatives --set java java-11-openjdk.x86_64'
+  become: true
+
+- name: "Add Jenkins repository"
+  get_url:
+    url: "https://pkg.jenkins.io/redhat-stable/jenkins.repo"
+    dest: "/etc/yum.repos.d/jenkins.repo"
+
+- name: "Import Jenkins key"
+  command: "rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key"
+  changed_when: false
+
+- name: "Install Jenkins"
+  yum:
+    name: jenkins-{{ jenkins_version }}
+    state: present

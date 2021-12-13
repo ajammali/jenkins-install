@@ -1,0 +1,3 @@
+---
+
+jenkins_source_dir_certs: {{ playbook_dir }}/certs

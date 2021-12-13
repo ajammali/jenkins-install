@@ -1,0 +1,41 @@
+- name: "Stop Jenkins"
+  service: name="jenkins" state="stopped"
+
+- name: Cleanup default work directory
+  file:
+    src: "{{ jenkins_home }}"
+    state: absent
+
+- name: Install backup from previous install
+  unarchive: 
+    src: "{{ backup_location }}"
+    dest: "{{ jenkins_home }}"
+    owner: "{{ jenkins_config_owner }}"
+    mode: 755
+    group: "{{ jenkins_config_group }}"
+
+- name: Make sure JKS keystore location is created
+  file:
+    src: "{{ jenkins_home }}/keystore"
+    state: directory
+    owner: "{{ jenkins_config_owner }}"
+    group: "{{ jenkins_config_group }}"
+    mode: 755
+
+- name: Setup jenkins config file
+  template:
+    src: "{{ jenkins_home }}/jenkins_configs/jenkins"
+    dest: /etc/sysconfig/jenkins
+    mode: 600
+
+- name: Setup TLS and JKS files
+  template:
+    src: "{{ jenkins_source_dir_certs }}/{{ item.src }}"
+    dest: "{{ jenkins_home }}/{{ item.dest }}"
+    mode: 0644
+    owner: "{{ jenkins_config_owner }}"
+    group: "{{ jenkins_config_group }}"
+  with_items: "{{ jenkins_cert_files }}"
+
+- name: "Start Jenkins"
+  service: name="jenkins" state="started"   

@@ -1,0 +1,17 @@
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = jenkins
+DNS.2 = jenkins.example.com
+DNS.3 = jenkins.ans.com
+IP.1 = 10.134.52.159
+IP.2 = 10.0.77.17
+IP.3 = 172.17.0.1
+IP.4 = 192.168.56.11
+IP.5 = 127.0.0.1

@@ -1,0 +1,16 @@
+- hosts: jenkins
+  vars:
+    jenkins_version: "2.319.1-1.1"
+    jenkins_hostname: "127.0.0.1"
+    jenkins_port: 8080
+    jenkins_auth: "api"
+    jenkins_install_via: "yum"
+    jenkins_include_secrets: false
+    jenkins_include_custom_files: true
+    jenkins_custom_files:
+      - src: "users/admin/config.xml"
+        dest: "users/admin/config.xml"
+
+  roles:
+  - setup
+  - restore
