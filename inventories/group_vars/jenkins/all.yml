@@ -1,4 +1,7 @@
 ---
+
+redhat_trust_anchors: "/etc/pki/ca-trust/source/anchors"
+
 jenkins_version: "2.319.1-1.1"  # The exact version of jenkins to deploy
 
 jenkins_hostname: "jenkins.example.com"  # The hostname that Jenkins will be accessible on
@@ -8,7 +11,7 @@ jenkins_port: "8080"
 # The port that Jenkins will listen on for secured (HTTPS) requests. Define to -1 to
 # disable HTTPS. Enabling this option requires a SSL certificate (see below).
 jenkins_port_https: "-1"
-jenkins_home: /data/jenkins  # The directory on the server where the Jenkins configs live
+jenkins_home: /var/lib/jenkins  # The directory on the server where the Jenkins configs live
 jenkins_admin: "admin@ans.com"  # The administrator email address for the server
 
 # If you need to override any java options then do that here.

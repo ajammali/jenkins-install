@@ -3,7 +3,7 @@
 
 - name: Cleanup default work directory
   file:
-    src: "{{ jenkins_home }}"
+    path: "{{ jenkins_home }}/*"
     state: absent
 
 - name: Install backup from previous install
@@ -13,10 +13,11 @@
     owner: "{{ jenkins_config_owner }}"
     mode: 755
     group: "{{ jenkins_config_group }}"
+    remote_src: true
 
 - name: Make sure JKS keystore location is created
   file:
-    src: "{{ jenkins_home }}/keystore"
+    path: "{{ jenkins_home }}/keystore"
     state: directory
     owner: "{{ jenkins_config_owner }}"
     group: "{{ jenkins_config_group }}"
@@ -24,18 +25,30 @@
 
 - name: Setup jenkins config file
   template:
-    src: "{{ jenkins_home }}/jenkins_configs/jenkins"
+    src: "{{ playbook_dir }}/jenkins-configs/jenkins"
     dest: /etc/sysconfig/jenkins
     mode: 600
 
 - name: Setup TLS and JKS files
   template:
-    src: "{{ jenkins_source_dir_certs }}/{{ item.src }}"
-    dest: "{{ jenkins_home }}/{{ item.dest }}"
+    src: "{{ playbook_dir }}/{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+  with_items: "{{ jenkins_cert_files }}"
+
+- name: Copy JKS keystore to jenkins home directory
+  copy:
+    src: "{{ playbook_dir }}/certs/jenkins.jks"
+    dest: "{{ jenkins_home }}/keystore"
     mode: 0644
     owner: "{{ jenkins_config_owner }}"
-    group: "{{ jenkins_config_group }}"
-  with_items: "{{ jenkins_cert_files }}"
+    group:  "{{ jenkins_config_group }}"
+
+- name: Update trusted ca for redhat
+  shell: /bin/update-ca-trust
+  when: ansible_os_family == "RedHat"
 
 - name: "Start Jenkins"
   service: name="jenkins" state="started"   

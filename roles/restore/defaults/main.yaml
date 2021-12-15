@@ -1,3 +1,4 @@
 ---
 
-jenkins_source_dir_certs: {{ playbook_dir }}/certs
+backup_location:  "{{ playbook_dir }}/backup.tar.gz"
+jenkins_source_dir_certs: "{{ playbook_dir }}/certs"

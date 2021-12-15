@@ -26,15 +26,6 @@
   shell: 'update-alternatives --set java java-11-openjdk.x86_64'
   become: true
 
-- name: "Add Jenkins repository"
-  get_url:
-    url: "https://pkg.jenkins.io/redhat-stable/jenkins.repo"
-    dest: "/etc/yum.repos.d/jenkins.repo"
-
-- name: "Import Jenkins key"
-  command: "rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key"
-  changed_when: false
-
 - name: "Install Jenkins"
   yum:
     name: jenkins-{{ jenkins_version }}

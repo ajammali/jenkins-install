@@ -10,7 +10,10 @@
     jenkins_custom_files:
       - src: "users/admin/config.xml"
         dest: "users/admin/config.xml"
-
+    jenkins_cert_files:
+      - src: "certs/ca.crt"
+        dest: "{{ redhat_trust_anchors }}"
+        mode: "644"
   roles:
-  - setup
+  - configure
   - restore
